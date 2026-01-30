@@ -1,0 +1,1506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Identity Verification - Aao Vote Karo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #2563eb;
+            --primary-dark: #1e40af;
+            --success-color: #059669;
+            --error-color: #dc2626;
+            --warning-color: #f59e0b;
+            --bg-light: #f8fafc;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--text-primary);
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .logo {
+            width: 60px;
+            height: 60px;
+            background: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+            margin-top: 8px;
+        }
+
+        .verification-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            background: var(--bg-light);
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            margin-bottom: 10px;
+        }
+
+        .progress-line {
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--border-color);
+            z-index: 0;
+        }
+
+        .progress-line-fill {
+            height: 100%;
+            background: var(--primary-color);
+            transition: width 0.3s ease;
+        }
+
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            z-index: 1;
+            flex: 1;
+        }
+
+        .step-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: white;
+            border: 2px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .step.active .step-circle {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+        }
+
+        .step.completed .step-circle {
+            background: var(--success-color);
+            border-color: var(--success-color);
+            color: white;
+        }
+
+        .step-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .step.active .step-label {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .card-content {
+            padding: 40px;
+        }
+
+        .step-content {
+            display: none;
+        }
+
+        .step-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+        }
+
+        .section-description {
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+
+        .required {
+            color: var(--error-color);
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="date"],
+        select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            background: white;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .input-hint {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 6px;
+        }
+
+        .upload-area {
+            border: 2px dashed var(--border-color);
+            border-radius: 12px;
+            padding: 40px 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background: var(--bg-light);
+        }
+
+        .upload-area:hover {
+            border-color: var(--primary-color);
+            background: #eff6ff;
+        }
+
+        .upload-area.dragover {
+            border-color: var(--primary-color);
+            background: #eff6ff;
+            transform: scale(1.02);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            margin-bottom: 12px;
+        }
+
+        .upload-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 6px;
+        }
+
+        .upload-hint {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .preview-container {
+            margin-top: 20px;
+            padding: 16px;
+            background: var(--bg-light);
+            border-radius: 8px;
+            display: none;
+        }
+
+        .preview-container.active {
+            display: block;
+        }
+
+        .preview-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .preview-icon {
+            font-size: 2rem;
+        }
+
+        .preview-info {
+            flex: 1;
+        }
+
+        .preview-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .preview-size {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .remove-btn {
+            background: none;
+            border: none;
+            color: var(--error-color);
+            cursor: pointer;
+            padding: 8px;
+            font-size: 1.2rem;
+            transition: transform 0.2s ease;
+        }
+
+        .remove-btn:hover {
+            transform: scale(1.2);
+        }
+
+        .biometric-section {
+            background: var(--bg-light);
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .video-container {
+            position: relative;
+            max-width: 500px;
+            margin: 20px auto;
+            border-radius: 12px;
+            overflow: hidden;
+            background: black;
+        }
+
+        #video {
+            width: 100%;
+            display: block;
+        }
+
+        #canvas {
+            display: none;
+        }
+
+        .capture-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border: 3px solid var(--primary-color);
+            border-radius: 12px;
+            pointer-events: none;
+        }
+
+        .biometric-controls {
+            margin-top: 20px;
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .captured-image {
+            max-width: 500px;
+            margin: 20px auto;
+            border-radius: 12px;
+            box-shadow: var(--shadow-md);
+            display: none;
+        }
+
+        .captured-image.active {
+            display: block;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-secondary {
+            background: var(--bg-light);
+            color: var(--text-primary);
+            border: 2px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: white;
+            border-color: var(--primary-color);
+        }
+
+        .btn-success {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #047857;
+        }
+
+        .btn-lg {
+            padding: 16px 32px;
+            font-size: 1.1rem;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            justify-content: space-between;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        .alert {
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .alert-info {
+            background: #eff6ff;
+            border-left: 4px solid var(--primary-color);
+            color: #1e40af;
+        }
+
+        .alert-warning {
+            background: #fffbeb;
+            border-left: 4px solid var(--warning-color);
+            color: #92400e;
+        }
+
+        .alert-success {
+            background: #ecfdf5;
+            border-left: 4px solid var(--success-color);
+            color: #065f46;
+        }
+
+        .alert-icon {
+            font-size: 1.5rem;
+        }
+
+        .security-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .feature-card {
+            text-align: center;
+            padding: 20px;
+            background: var(--bg-light);
+            border-radius: 8px;
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+        }
+
+        .feature-title {
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .feature-description {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .review-section {
+            background: var(--bg-light);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .review-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .review-item:last-child {
+            border-bottom: none;
+        }
+
+        .review-label {
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .review-value {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 16px;
+            background: var(--bg-light);
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            margin-top: 4px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .checkbox-label {
+            flex: 1;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .card-content {
+                padding: 24px;
+            }
+
+            .progress-steps {
+                overflow-x: auto;
+            }
+
+            .step-label {
+                font-size: 0.75rem;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        .spinner {
+            border: 3px solid var(--border-color);
+            border-top: 3px solid var(--primary-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .success-animation {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .success-checkmark {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--success-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 3rem;
+            color: white;
+            animation: scaleIn 0.5s ease;
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+            }
+            to {
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo-section">
+                <div class="logo">🗳️</div>
+                <h1>Aao Vote Karo</h1>
+            </div>
+            <p>Secure Digital Voting Platform - Identity Verification</p>
+        </div>
+
+        <div class="verification-card">
+            <div class="progress-bar">
+                <div class="progress-steps">
+                    <div class="progress-line">
+                        <div class="progress-line-fill" id="progressFill" style="width: 0%"></div>
+                    </div>
+                    <div class="step active" data-step="1">
+                        <div class="step-circle">1</div>
+                        <div class="step-label">Personal Info</div>
+                    </div>
+                    <div class="step" data-step="2">
+                        <div class="step-circle">2</div>
+                        <div class="step-label">Documents</div>
+                    </div>
+                    <div class="step" data-step="3">
+                        <div class="step-circle">3</div>
+                        <div class="step-label">Biometric</div>
+                    </div>
+                    <div class="step" data-step="4">
+                        <div class="step-circle">4</div>
+                        <div class="step-label">Fingerprint</div>
+                    </div>
+                    <div class="step" data-step="5">
+                        <div class="step-circle">5</div>
+                        <div class="step-label">Review</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-content">
+                <!-- Step 1: Personal Information -->
+                <div class="step-content active" id="step1">
+                    <h2 class="section-title">Personal Information</h2>
+                    <p class="section-description">Please provide your accurate personal details as per your government-issued ID.</p>
+
+                    <div class="alert alert-info">
+                        <div class="alert-icon">🔒</div>
+                        <div>
+                            <strong>Privacy Notice:</strong> Your information is encrypted and stored securely. We comply with all data protection regulations.
+                        </div>
+                    </div>
+
+                    <form id="personalInfoForm">
+                        <div class="form-group">
+                            <label for="fullName">Full Name <span class="required">*</span></label>
+                            <input type="text" id="fullName" name="fullName" required placeholder="As per government ID">
+                            <div class="input-hint">Enter your complete legal name</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="dob">Date of Birth <span class="required">*</span></label>
+                            <input type="date" id="dob" name="dob" required max="2006-01-31">
+                            <div class="input-hint">You must be 18 years or older to vote</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="voterId">Voter ID Number <span class="required">*</span></label>
+                            <input type="text" id="voterId" name="voterId" required placeholder="e.g., ABC1234567" pattern="[A-Z]{3}[0-9]{7}">
+                            <div class="input-hint">10-character alphanumeric ID</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="aadhaar">Aadhaar Number <span class="required">*</span></label>
+                            <input type="text" id="aadhaar" name="aadhaar" required placeholder="XXXX XXXX XXXX" pattern="[0-9]{4}\s[0-9]{4}\s[0-9]{4}" maxlength="14">
+                            <div class="input-hint">12-digit Aadhaar number (XXXX XXXX XXXX format)</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="mobile">Mobile Number <span class="required">*</span></label>
+                            <input type="tel" id="mobile" name="mobile" required placeholder="+91 XXXXX XXXXX" pattern="[+]91\s[0-9]{5}\s[0-9]{5}">
+                            <div class="input-hint">For OTP verification</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">Email Address <span class="required">*</span></label>
+                            <input type="email" id="email" name="email" required placeholder="your.email@example.com">
+                            <div class="input-hint">We'll send confirmation to this email</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="state">State <span class="required">*</span></label>
+                            <select id="state" name="state" required>
+                                <option value="">Select your state</option>
+                                <option value="Andhra Pradesh">Andhra Pradesh</option>
+                                <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                                <option value="Assam">Assam</option>
+                                <option value="Bihar">Bihar</option>
+                                <option value="Chhattisgarh">Chhattisgarh</option>
+                                <option value="Goa">Goa</option>
+                                <option value="Gujarat">Gujarat</option>
+                                <option value="Haryana">Haryana</option>
+                                <option value="Himachal Pradesh">Himachal Pradesh</option>
+                                <option value="Jharkhand">Jharkhand</option>
+                                <option value="Karnataka">Karnataka</option>
+                                <option value="Kerala">Kerala</option>
+                                <option value="Madhya Pradesh">Madhya Pradesh</option>
+                                <option value="Maharashtra">Maharashtra</option>
+                                <option value="Manipur">Manipur</option>
+                                <option value="Meghalaya">Meghalaya</option>
+                                <option value="Mizoram">Mizoram</option>
+                                <option value="Nagaland">Nagaland</option>
+                                <option value="Odisha">Odisha</option>
+                                <option value="Punjab">Punjab</option>
+                                <option value="Rajasthan">Rajasthan</option>
+                                <option value="Sikkim">Sikkim</option>
+                                <option value="Tamil Nadu">Tamil Nadu</option>
+                                <option value="Telangana">Telangana</option>
+                                <option value="Tripura">Tripura</option>
+                                <option value="Uttar Pradesh">Uttar Pradesh</option>
+                                <option value="Uttarakhand">Uttarakhand</option>
+                                <option value="West Bengal">West Bengal</option>
+                                <option value="Delhi">Delhi</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="hasTwin">Do you have a twin sibling? <span class="required">*</span></label>
+                            <select id="hasTwin" name="hasTwin" required onchange="toggleTwinInfo()">
+                                <option value="">Please select</option>
+                                <option value="no">No</option>
+                                <option value="yes">Yes</option>
+                            </select>
+                            <div class="input-hint">This helps us ensure accurate identification</div>
+                        </div>
+
+                        <div id="twinInfoSection" style="display: none;">
+                            <div class="alert alert-info">
+                                <div class="alert-icon">👥</div>
+                                <div>
+                                    <strong>Additional Verification Required:</strong> Since you have a twin sibling, fingerprint verification will be required to ensure accurate identification and prevent fraud.
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="twinName">Twin Sibling's Full Name <span class="required">*</span></label>
+                                <input type="text" id="twinName" name="twinName" placeholder="Enter your twin's full name">
+                                <div class="input-hint">This helps us cross-reference records</div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="twinVoterId">Twin Sibling's Voter ID (if registered)</label>
+                                <input type="text" id="twinVoterId" name="twinVoterId" placeholder="e.g., ABC1234567" pattern="[A-Z]{3}[0-9]{7}">
+                                <div class="input-hint">Optional - helps in verification</div>
+                            </div>
+                        </div>
+                    </form>
+
+                    <div class="button-group">
+                        <button type="button" class="btn btn-secondary" disabled>← Previous</button>
+                        <button type="button" class="btn btn-primary" onclick="nextStep(1)">Next: Upload Documents →</button>
+                    </div>
+                </div>
+
+                <!-- Step 2: Document Upload -->
+                <div class="step-content" id="step2">
+                    <h2 class="section-title">Document Verification</h2>
+                    <p class="section-description">Upload clear, readable copies of your identity documents. All documents must be valid and not expired.</p>
+
+                    <div class="alert alert-warning">
+                        <div class="alert-icon">⚠️</div>
+                        <div>
+                            <strong>Important:</strong> Ensure documents are clear, well-lit, and all corners are visible. Accepted formats: JPG, PNG, PDF (max 5MB each).
+                        </div>
+                    </div>
+
+                    <!-- Voter ID Upload -->
+                    <div class="form-group">
+                        <label>Voter ID Card <span class="required">*</span></label>
+                        <div class="upload-area" id="voterIdUpload" onclick="document.getElementById('voterIdInput').click()">
+                            <div class="upload-icon">📄</div>
+                            <div class="upload-text">Click to upload or drag and drop</div>
+                            <div class="upload-hint">Front and back of Voter ID (JPG, PNG, PDF - Max 5MB)</div>
+                        </div>
+                        <input type="file" id="voterIdInput" class="file-input" accept="image/*,.pdf" multiple onchange="handleFileUpload(event, 'voterId')">
+                        <div class="preview-container" id="voterIdPreview"></div>
+                    </div>
+
+                    <!-- Aadhaar Upload -->
+                    <div class="form-group">
+                        <label>Aadhaar Card <span class="required">*</span></label>
+                        <div class="upload-area" id="aadhaarUpload" onclick="document.getElementById('aadhaarInput').click()">
+                            <div class="upload-icon">📄</div>
+                            <div class="upload-text">Click to upload or drag and drop</div>
+                            <div class="upload-hint">Front and back of Aadhaar (JPG, PNG, PDF - Max 5MB)</div>
+                        </div>
+                        <input type="file" id="aadhaarInput" class="file-input" accept="image/*,.pdf" multiple onchange="handleFileUpload(event, 'aadhaar')">
+                        <div class="preview-container" id="aadhaarPreview"></div>
+                    </div>
+
+                    <!-- Address Proof Upload -->
+                    <div class="form-group">
+                        <label>Address Proof (Optional)</label>
+                        <div class="upload-area" id="addressUpload" onclick="document.getElementById('addressInput').click()">
+                            <div class="upload-icon">📄</div>
+                            <div class="upload-text">Click to upload or drag and drop</div>
+                            <div class="upload-hint">Utility bill, bank statement, or rental agreement (JPG, PNG, PDF - Max 5MB)</div>
+                        </div>
+                        <input type="file" id="addressInput" class="file-input" accept="image/*,.pdf" onchange="handleFileUpload(event, 'address')">
+                        <div class="preview-container" id="addressPreview"></div>
+                    </div>
+
+                    <div class="button-group">
+                        <button type="button" class="btn btn-secondary" onclick="previousStep(2)">← Previous</button>
+                        <button type="button" class="btn btn-primary" id="docsNextBtn" onclick="nextStep(2)" disabled>Next: Biometric Verification →</button>
+                    </div>
+                </div>
+
+                <!-- Step 3: Biometric Verification -->
+                <div class="step-content" id="step3">
+                    <h2 class="section-title">Biometric Verification (Optional)</h2>
+                    <p class="section-description">Capture your live photograph for facial recognition and liveness detection. This is optional but recommended for enhanced security.</p>
+
+                    <div class="alert alert-info">
+                        <div class="alert-icon">📸</div>
+                        <div>
+                            <strong>Optional Step:</strong> You can skip this step if you prefer. However, facial verification adds an extra layer of security to your account.
+                        </div>
+                    </div>
+
+                    <div class="biometric-section">
+                        <div class="video-container" id="videoContainer" style="display: none;">
+                            <video id="video" autoplay playsinline></video>
+                            <div class="capture-overlay"></div>
+                        </div>
+                        <canvas id="canvas"></canvas>
+                        <img id="capturedImage" class="captured-image">
+
+                        <div class="biometric-controls">
+                            <button type="button" class="btn btn-primary" id="startCameraBtn" onclick="startCamera()">
+                                📹 Start Camera
+                            </button>
+                            <button type="button" class="btn btn-success" id="captureBtn" onclick="capturePhoto()" style="display: none;">
+                                📸 Capture Photo
+                            </button>
+                            <button type="button" class="btn btn-secondary" id="retakeBtn" onclick="retakePhoto()" style="display: none;">
+                                🔄 Retake
+                            </button>
+                        </div>
+
+                        <div class="security-features">
+                            <div class="feature-card">
+                                <div class="feature-icon">👁️</div>
+                                <div class="feature-title">Liveness Detection</div>
+                                <div class="feature-description">AI verifies you're a real person</div>
+                            </div>
+                            <div class="feature-card">
+                                <div class="feature-icon">🔍</div>
+                                <div class="feature-title">Face Matching</div>
+                                <div class="feature-description">Matches with ID documents</div>
+                            </div>
+                            <div class="feature-card">
+                                <div class="feature-icon">🚫</div>
+                                <div class="feature-title">Anti-Spoofing</div>
+                                <div class="feature-description">Prevents photo/video fraud</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="button-group">
+                        <button type="button" class="btn btn-secondary" onclick="previousStep(3)">← Previous</button>
+                        <button type="button" class="btn btn-primary" id="biometricNextBtn" onclick="nextStep(3)">Next: Fingerprint Verification →</button>
+                    </div>
+                </div>
+
+                <!-- Step 4: Fingerprint Verification -->
+                <div class="step-content" id="step4">
+                    <h2 class="section-title">Fingerprint Verification</h2>
+                    <p class="section-description" id="fingerprintDescription">Enhanced security verification through fingerprint scanning.</p>
+
+                    <div class="alert alert-warning" id="twinFingerprintAlert" style="display: none;">
+                        <div class="alert-icon">👥</div>
+                        <div>
+                            <strong>Twin Verification Required:</strong> As you indicated having a twin sibling, fingerprint verification is mandatory to ensure accurate identification.
+                        </div>
+                    </div>
+
+                    <div class="alert alert-info" id="optionalFingerprintAlert">
+                        <div class="alert-icon">👆</div>
+                        <div>
+                            <strong>Optional Step:</strong> Fingerprint verification is optional for non-twin voters but provides enhanced security.
+                        </div>
+                    </div>
+
+                    <div class="biometric-section">
+                        <div class="fingerprint-scanner">
+                            <div style="text-align: center; margin: 40px 0;">
+                                <div id="fingerprintIcon" style="font-size: 120px; margin-bottom: 20px; opacity: 0.3; transition: all 0.3s ease;">👆</div>
+                                <h3 id="fingerprintStatus" style="color: var(--text-secondary); margin-bottom: 20px;">Place your finger on the scanner</h3>
+                                <div id="fingerprintProgress" style="display: none;">
+                                    <div class="spinner"></div>
+                                    <p style="margin-top: 20px; color: var(--text-secondary);">Scanning fingerprint...</p>
+                                </div>
+                            </div>
+
+                            <div class="fingerprint-controls" style="text-align: center;">
+                                <button type="button" class="btn btn-primary" id="startFingerprintBtn" onclick="simulateFingerprintScan()">
+                                    👆 Start Fingerprint Scan
+                                </button>
+                                <button type="button" class="btn btn-secondary" id="rescanFingerprintBtn" onclick="resetFingerprint()" style="display: none;">
+                                    🔄 Scan Again
+                                </button>
+                            </div>
+
+                            <div id="fingerprintSuccess" style="display: none; text-align: center; margin-top: 30px;">
+                                <div style="font-size: 80px; color: var(--success-color); margin-bottom: 15px;">✓</div>
+                                <h3 style="color: var(--success-color); margin-bottom: 10px;">Fingerprint Captured Successfully!</h3>
+                                <p style="color: var(--text-secondary);">Your fingerprint has been verified and stored securely.</p>
+                            </div>
+                        </div>
+
+                        <div class="security-features" style="margin-top: 40px;">
+                            <div class="feature-card">
+                                <div class="feature-icon">🔐</div>
+                                <div class="feature-title">Unique Identification</div>
+                                <div class="feature-description">No two fingerprints are alike</div>
+                            </div>
+                            <div class="feature-card">
+                                <div class="feature-icon">🛡️</div>
+                                <div class="feature-title">Encrypted Storage</div>
+                                <div class="feature-description">Military-grade encryption</div>
+                            </div>
+                            <div class="feature-card">
+                                <div class="feature-icon">⚡</div>
+                                <div class="feature-title">Quick Verification</div>
+                                <div class="feature-description">Instant matching</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="button-group">
+                        <button type="button" class="btn btn-secondary" onclick="previousStep(4)">← Previous</button>
+                        <button type="button" class="btn btn-primary" id="skipFingerprintBtn" onclick="nextStep(4)" style="display: none;">Skip This Step →</button>
+                        <button type="button" class="btn btn-primary" id="fingerprintNextBtn" onclick="nextStep(4)" disabled>Next: Review & Submit →</button>
+                    </div>
+                </div>
+
+                <!-- Step 5: Review & Submit -->
+                <div class="step-content" id="step5">
+                    <h2 class="section-title">Review Your Information</h2>
+                    <p class="section-description">Please carefully review all information before final submission. Once submitted, changes cannot be made.</p>
+
+                    <div class="review-section">
+                        <h3 style="margin-bottom: 16px; color: var(--text-primary);">Personal Information</h3>
+                        <div class="review-item">
+                            <span class="review-label">Full Name:</span>
+                            <span class="review-value" id="reviewName">-</span>
+                        </div>
+                        <div class="review-item">
+                            <span class="review-label">Date of Birth:</span>
+                            <span class="review-value" id="reviewDob">-</span>
+                        </div>
+                        <div class="review-item">
+                            <span class="review-label">Voter ID:</span>
+                            <span class="review-value" id="reviewVoterId">-</span>
+                        </div>
+                        <div class="review-item">
+                            <span class="review-label">Aadhaar:</span>
+                            <span class="review-value" id="reviewAadhaar">-</span>
+                        </div>
+                        <div class="review-item">
+                            <span class="review-label">Mobile:</span>
+                            <span class="review-value" id="reviewMobile">-</span>
+                        </div>
+                        <div class="review-item">
+                            <span class="review-label">Email:</span>
+                            <span class="review-value" id="reviewEmail">-</span>
+                        </div>
+                        <div class="review-item">
+                            <span class="review-label">State:</span>
+                            <span class="review-value" id="reviewState">-</span>
+                        </div>
+                        <div class="review-item" id="reviewTwinSection" style="display: none;">
+                            <span class="review-label">Has Twin:</span>
+                            <span class="review-value" id="reviewHasTwin">-</span>
+                        </div>
+                    </div>
+
+                    <div class="review-section">
+                        <h3 style="margin-bottom: 16px; color: var(--text-primary);">Documents Uploaded</h3>
+                        <div class="review-item">
+                            <span class="review-label">Voter ID Card:</span>
+                            <span class="review-value" id="reviewVoterIdDocs">-</span>
+                        </div>
+                        <div class="review-item">
+                            <span class="review-label">Aadhaar Card:</span>
+                            <span class="review-value" id="reviewAadhaarDocs">-</span>
+                        </div>
+                    </div>
+
+                    <div class="review-section">
+                        <h3 style="margin-bottom: 16px; color: var(--text-primary);">Biometric Verification</h3>
+                        <div class="review-item">
+                            <span class="review-label">Facial Photo:</span>
+                            <span class="review-value" id="reviewBiometric">-</span>
+                        </div>
+                        <div class="review-item">
+                            <span class="review-label">Fingerprint:</span>
+                            <span class="review-value" id="reviewFingerprint">-</span>
+                        </div>
+                    </div>
+
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="termsCheckbox" onchange="validateFinalSubmit()">
+                        <label for="termsCheckbox" class="checkbox-label">
+                            <strong>I hereby declare that:</strong> All information provided is accurate and true to the best of my knowledge. I understand that providing false information is a criminal offense and may result in legal action. I consent to the collection and processing of my personal data for voter verification purposes in accordance with data protection laws.
+                        </label>
+                    </div>
+
+                    <div class="alert alert-warning">
+                        <div class="alert-icon">⚠️</div>
+                        <div>
+                            <strong>Final Verification:</strong> Once submitted, your application will be reviewed by our verification team. You will receive a confirmation email within 24-48 hours.
+                        </div>
+                    </div>
+
+                    <div class="button-group">
+                        <button type="button" class="btn btn-secondary" onclick="previousStep(5)">← Previous</button>
+                        <button type="button" class="btn btn-success btn-lg" id="finalSubmitBtn" onclick="submitVerification()" disabled>
+                            ✓ Submit for Verification
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Success Step -->
+                <div class="step-content" id="stepSuccess">
+                    <div class="success-animation">
+                        <div class="success-checkmark">✓</div>
+                        <h2 class="section-title" style="color: var(--success-color);">Verification Submitted Successfully!</h2>
+                        <p class="section-description">Your identity verification has been submitted for review. Here's what happens next:</p>
+
+                        <div class="security-features" style="margin-top: 30px;">
+                            <div class="feature-card">
+                                <div class="feature-icon">📧</div>
+                                <div class="feature-title">Confirmation Email</div>
+                                <div class="feature-description">Sent to your registered email</div>
+                            </div>
+                            <div class="feature-card">
+                                <div class="feature-icon">🔍</div>
+                                <div class="feature-title">Document Review</div>
+                                <div class="feature-description">24-48 hours processing time</div>
+                            </div>
+                            <div class="feature-card">
+                                <div class="feature-icon">✅</div>
+                                <div class="feature-title">Approval Notification</div>
+                                <div class="feature-description">SMS & email confirmation</div>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-success" style="margin-top: 30px;">
+                            <div class="alert-icon">📱</div>
+                            <div>
+                                <strong>Reference ID: AVK-2026-</strong><span id="referenceId"></span><br>
+                                Please save this reference ID for tracking your application status.
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 40px;">
+                            <button type="button" class="btn btn-primary btn-lg" onclick="window.location.href='/'">
+                                Return to Homepage
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align: center; color: white; margin-top: 30px; opacity: 0.9;">
+            <p>🔒 Secured with 256-bit encryption | 🛡️ ISO 27001 Certified | 🇮🇳 Compliant with IT Act 2000</p>
+            <p style="margin-top: 8px; font-size: 0.9rem;">© 2026 Aao Vote Karo. All rights reserved.</p>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        let uploadedFiles = {
+            voterId: [],
+            aadhaar: [],
+            address: []
+        };
+        let capturedPhotoData = null;
+        let fingerprintCaptured = false;
+        let hasTwin = false;
+        let videoStream = null;
+
+        // Aadhaar formatting
+        document.getElementById('aadhaar').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\s/g, '');
+            if (value.length > 12) value = value.substring(0, 12);
+            
+            let formatted = '';
+            for (let i = 0; i < value.length; i++) {
+                if (i > 0 && i % 4 === 0) formatted += ' ';
+                formatted += value[i];
+            }
+            e.target.value = formatted;
+        });
+
+        // Mobile formatting
+        document.getElementById('mobile').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.startsWith('91')) value = value.substring(2);
+            if (value.length > 10) value = value.substring(0, 10);
+            
+            if (value.length > 5) {
+                e.target.value = '+91 ' + value.substring(0, 5) + ' ' + value.substring(5);
+            } else if (value.length > 0) {
+                e.target.value = '+91 ' + value;
+            } else {
+                e.target.value = '';
+            }
+        });
+
+        // Twin selection handler
+        function toggleTwinInfo() {
+            const hasTwinSelect = document.getElementById('hasTwin');
+            const twinInfoSection = document.getElementById('twinInfoSection');
+            hasTwin = hasTwinSelect.value === 'yes';
+            
+            if (hasTwin) {
+                twinInfoSection.style.display = 'block';
+                document.getElementById('twinName').setAttribute('required', 'required');
+            } else {
+                twinInfoSection.style.display = 'none';
+                document.getElementById('twinName').removeAttribute('required');
+                document.getElementById('twinName').value = '';
+                document.getElementById('twinVoterId').value = '';
+            }
+        }
+
+        function nextStep(step) {
+            if (step === 1 && !validatePersonalInfo()) return;
+            if (step === 2 && !validateDocuments()) return;
+            if (step === 4 && !validateFingerprint()) return;
+
+            document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
+            
+            for (let i = 1; i <= step; i++) {
+                document.querySelector(`.step[data-step="${i}"]`).classList.add('completed');
+            }
+
+            currentStep = step + 1;
+            
+            // Initialize fingerprint step if moving to it
+            if (currentStep === 4) {
+                initializeFingerprintStep();
+            }
+            
+            document.getElementById(`step${currentStep}`).classList.add('active');
+            document.querySelector(`.step[data-step="${currentStep}"]`).classList.add('active');
+            
+            const progress = ((currentStep - 1) / 4) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+
+            if (currentStep === 5) {
+                populateReview();
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function previousStep(step) {
+            if (videoStream) {
+                videoStream.getTracks().forEach(track => track.stop());
+            }
+
+            document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.step').forEach(el => {
+                el.classList.remove('active');
+                if (parseInt(el.dataset.step) > step - 1) {
+                    el.classList.remove('completed');
+                }
+            });
+
+            currentStep = step - 1;
+            document.getElementById(`step${currentStep}`).classList.add('active');
+            document.querySelector(`.step[data-step="${currentStep}"]`).classList.add('active');
+            
+            const progress = ((currentStep - 1) / 4) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function validatePersonalInfo() {
+            const form = document.getElementById('personalInfoForm');
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return false;
+            }
+
+            const dob = new Date(document.getElementById('dob').value);
+            const age = (new Date() - dob) / (365.25 * 24 * 60 * 60 * 1000);
+            if (age < 18) {
+                alert('You must be at least 18 years old to register.');
+                return false;
+            }
+
+            return true;
+        }
+
+        function validateDocuments() {
+            if (uploadedFiles.voterId.length === 0 || uploadedFiles.aadhaar.length === 0) {
+                alert('Please upload both Voter ID and Aadhaar card documents.');
+                return false;
+            }
+            return true;
+        }
+
+        function validateFingerprint() {
+            // If user has a twin, fingerprint is required
+            if (hasTwin && !fingerprintCaptured) {
+                alert('Fingerprint verification is required for voters with twin siblings.');
+                return false;
+            }
+            return true;
+        }
+
+        function initializeFingerprintStep() {
+            if (hasTwin) {
+                // Show twin alert, hide optional alert
+                document.getElementById('twinFingerprintAlert').style.display = 'flex';
+                document.getElementById('optionalFingerprintAlert').style.display = 'none';
+                document.getElementById('skipFingerprintBtn').style.display = 'none';
+                document.getElementById('fingerprintNextBtn').disabled = true;
+            } else {
+                // Show optional alert, hide twin alert
+                document.getElementById('twinFingerprintAlert').style.display = 'none';
+                document.getElementById('optionalFingerprintAlert').style.display = 'flex';
+                document.getElementById('skipFingerprintBtn').style.display = 'inline-flex';
+                document.getElementById('fingerprintNextBtn').disabled = true;
+            }
+        }
+
+        function simulateFingerprintScan() {
+            // Hide start button, show progress
+            document.getElementById('startFingerprintBtn').style.display = 'none';
+            document.getElementById('fingerprintProgress').style.display = 'block';
+            document.getElementById('fingerprintIcon').style.opacity = '1';
+            document.getElementById('fingerprintIcon').style.color = 'var(--primary-color)';
+
+            // Simulate scanning process
+            setTimeout(() => {
+                document.getElementById('fingerprintProgress').style.display = 'none';
+                document.getElementById('fingerprintIcon').style.display = 'none';
+                document.getElementById('fingerprintStatus').style.display = 'none';
+                document.getElementById('fingerprintSuccess').style.display = 'block';
+                document.getElementById('rescanFingerprintBtn').style.display = 'inline-flex';
+                document.getElementById('fingerprintNextBtn').disabled = false;
+                document.getElementById('skipFingerprintBtn').style.display = 'none';
+                
+                fingerprintCaptured = true;
+            }, 3000);
+        }
+
+        function resetFingerprint() {
+            document.getElementById('fingerprintSuccess').style.display = 'none';
+            document.getElementById('fingerprintIcon').style.display = 'block';
+            document.getElementById('fingerprintIcon').style.opacity = '0.3';
+            document.getElementById('fingerprintIcon').style.color = 'inherit';
+            document.getElementById('fingerprintStatus').style.display = 'block';
+            document.getElementById('rescanFingerprintBtn').style.display = 'none';
+            document.getElementById('startFingerprintBtn').style.display = 'inline-flex';
+            document.getElementById('fingerprintNextBtn').disabled = true;
+            
+            if (!hasTwin) {
+                document.getElementById('skipFingerprintBtn').style.display = 'inline-flex';
+            }
+            
+            fingerprintCaptured = false;
+        }
+
+        function handleFileUpload(event, type) {
+            const files = Array.from(event.target.files);
+            const maxSize = 5 * 1024 * 1024; // 5MB
+
+            files.forEach(file => {
+                if (file.size > maxSize) {
+                    alert(`File ${file.name} exceeds 5MB limit.`);
+                    return;
+                }
+
+                uploadedFiles[type].push(file);
+                displayFilePreview(file, type);
+            });
+
+            checkDocumentsComplete();
+        }
+
+        function displayFilePreview(file, type) {
+            const previewContainer = document.getElementById(`${type}Preview`);
+            previewContainer.classList.add('active');
+
+            const previewItem = document.createElement('div');
+            previewItem.className = 'preview-item';
+            previewItem.innerHTML = `
+                <div class="preview-icon">📄</div>
+                <div class="preview-info">
+                    <div class="preview-name">${file.name}</div>
+                    <div class="preview-size">${(file.size / 1024).toFixed(2)} KB</div>
+                </div>
+                <button class="remove-btn" onclick="removeFile('${type}', '${file.name}')">×</button>
+            `;
+            previewContainer.appendChild(previewItem);
+        }
+
+        function removeFile(type, filename) {
+            uploadedFiles[type] = uploadedFiles[type].filter(f => f.name !== filename);
+            
+            const previewContainer = document.getElementById(`${type}Preview`);
+            const items = previewContainer.querySelectorAll('.preview-item');
+            items.forEach(item => {
+                if (item.querySelector('.preview-name').textContent === filename) {
+                    item.remove();
+                }
+            });
+
+            if (uploadedFiles[type].length === 0) {
+                previewContainer.classList.remove('active');
+            }
+
+            checkDocumentsComplete();
+        }
+
+        function checkDocumentsComplete() {
+            const isComplete = uploadedFiles.voterId.length > 0 && uploadedFiles.aadhaar.length > 0;
+            document.getElementById('docsNextBtn').disabled = !isComplete;
+        }
+
+        // Drag and drop functionality
+        document.querySelectorAll('.upload-area').forEach(area => {
+            area.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                area.classList.add('dragover');
+            });
+
+            area.addEventListener('dragleave', () => {
+                area.classList.remove('dragover');
+            });
+
+            area.addEventListener('drop', (e) => {
+                e.preventDefault();
+                area.classList.remove('dragover');
+                
+                const type = area.id.replace('Upload', '');
+                const inputId = type + 'Input';
+                const input = document.getElementById(inputId);
+                
+                input.files = e.dataTransfer.files;
+                handleFileUpload({ target: input }, type);
+            });
+        });
+
+        async function startCamera() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { 
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 },
+                        facingMode: 'user'
+                    } 
+                });
+                
+                videoStream = stream;
+                const video = document.getElementById('video');
+                video.srcObject = stream;
+                
+                document.getElementById('startCameraBtn').style.display = 'none';
+                document.getElementById('captureBtn').style.display = 'inline-flex';
+                document.getElementById('videoContainer').style.display = 'block';
+            } catch (err) {
+                alert('Unable to access camera. Please ensure camera permissions are granted.');
+                console.error('Camera error:', err);
+            }
+        }
+
+        function capturePhoto() {
+            const video = document.getElementById('video');
+            const canvas = document.getElementById('canvas');
+            const capturedImage = document.getElementById('capturedImage');
+
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(video, 0, 0);
+            
+            capturedPhotoData = canvas.toDataURL('image/jpeg');
+            capturedImage.src = capturedPhotoData;
+            capturedImage.classList.add('active');
+            
+            document.getElementById('videoContainer').style.display = 'none';
+            document.getElementById('captureBtn').style.display = 'none';
+            document.getElementById('retakeBtn').style.display = 'inline-flex';
+
+            if (videoStream) {
+                videoStream.getTracks().forEach(track => track.stop());
+            }
+        }
+
+        function retakePhoto() {
+            capturedPhotoData = null;
+            document.getElementById('capturedImage').classList.remove('active');
+            document.getElementById('retakeBtn').style.display = 'none';
+            startCamera();
+        }
+
+        function populateReview() {
+            document.getElementById('reviewName').textContent = document.getElementById('fullName').value;
+            document.getElementById('reviewDob').textContent = new Date(document.getElementById('dob').value).toLocaleDateString('en-IN');
+            document.getElementById('reviewVoterId').textContent = document.getElementById('voterId').value;
+            document.getElementById('reviewAadhaar').textContent = document.getElementById('aadhaar').value;
+            document.getElementById('reviewMobile').textContent = document.getElementById('mobile').value;
+            document.getElementById('reviewEmail').textContent = document.getElementById('email').value;
+            document.getElementById('reviewState').textContent = document.getElementById('state').value;
+            
+            // Twin information
+            if (hasTwin) {
+                document.getElementById('reviewTwinSection').style.display = 'flex';
+                const twinName = document.getElementById('twinName').value;
+                const twinVoterId = document.getElementById('twinVoterId').value;
+                document.getElementById('reviewHasTwin').textContent = `Yes (${twinName}${twinVoterId ? ', Voter ID: ' + twinVoterId : ''})`;
+            }
+            
+            document.getElementById('reviewVoterIdDocs').textContent = `${uploadedFiles.voterId.length} file(s) uploaded ✓`;
+            document.getElementById('reviewAadhaarDocs').textContent = `${uploadedFiles.aadhaar.length} file(s) uploaded ✓`;
+            document.getElementById('reviewBiometric').textContent = capturedPhotoData ? 'Captured ✓' : 'Skipped';
+            document.getElementById('reviewFingerprint').textContent = fingerprintCaptured ? 'Captured ✓' : (hasTwin ? 'Required but not captured ⚠️' : 'Skipped');
+        }
+
+        function validateFinalSubmit() {
+            const termsChecked = document.getElementById('termsCheckbox').checked;
+            document.getElementById('finalSubmitBtn').disabled = !termsChecked;
+        }
+
+        function submitVerification() {
+            // Show loading state
+            const submitBtn = document.getElementById('finalSubmitBtn');
+            submitBtn.innerHTML = '<div class="spinner" style="width: 24px; height: 24px; margin: 0; border-width: 2px;"></div> Processing...';
+            submitBtn.disabled = true;
+
+            // Simulate API call
+            setTimeout(() => {
+                const referenceId = Math.random().toString(36).substring(2, 10).toUpperCase();
+                document.getElementById('referenceId').textContent = referenceId;
+
+                document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
+                document.getElementById('stepSuccess').classList.add('active');
+                
+                document.querySelectorAll('.step').forEach(el => el.classList.add('completed'));
+                document.getElementById('progressFill').style.width = '100%';
+
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
