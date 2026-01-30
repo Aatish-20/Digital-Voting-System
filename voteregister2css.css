@@ -1,0 +1,128 @@
+:root {
+    --color1: #574964;
+    --color2: #9F8383;
+    --color3: #C8AAAA;
+    --color4: #FFDAB3;
+    --white: #ffffff;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+}
+
+body {
+    background-color: var(--color1);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Updated Floating & Blinking Balls */
+.ball {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(60px);
+    z-index: 0;
+    /* Combines the float move and the pulse blink */
+    animation: float 18s infinite alternate ease-in-out, 
+               pulse 4s infinite alternate ease-in-out;
+}
+
+#ball1 {
+    width: 320px;
+    height: 320px;
+    background: var(--color4);
+    top: -50px;
+    left: 10%;
+    animation-delay: 0s, 0s; /* First is float, second is pulse */
+}
+
+#ball2 {
+    width: 450px;
+    height: 450px;
+    background: var(--color2);
+    bottom: -100px;
+    right: 5%;
+    animation-delay: -4s, -1s; /* Offset for natural look */
+}
+
+#ball3 {
+    width: 280px;
+    height: 280px;
+    background: var(--color3);
+    top: 35%;
+    right: 15%;
+    animation-delay: -8s, -2.5s;
+}
+
+/* The Blinking/Pulse Animation */
+@keyframes pulse {
+    0% {
+        opacity: 0.3;
+        transform: scale(0.95);
+    }
+    100% {
+        opacity: 0.7;
+        transform: scale(1.05);
+    }
+}
+
+@keyframes float {
+    0% { transform: translate(0, 0); }
+    100% { transform: translate(80px, 40px); }
+}
+
+/* Card Styling (Same as before) */
+.auth-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    padding: 40px;
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    width: 360px;
+    text-align: center;
+    color: white;
+    z-index: 10;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+h2 { margin-bottom: 8px; font-weight: 700; letter-spacing: -0.5px; }
+p { font-size: 0.85rem; margin-bottom: 30px; opacity: 0.6; }
+
+input {
+    width: 100%;
+    padding: 14px;
+    margin-bottom: 15px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.05);
+    color: white;
+    outline: none;
+}
+
+/* Oval Morphing Button */
+.auth-btn {
+    width: 100%;
+    padding: 14px;
+    background: var(--color4);
+    color: var(--color1);
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.auth-btn:active {
+    border-radius: 50px; /* Becomes Oval */
+    transform: scale(0.92);
+}
+
+.footer-links { margin-top: 25px; font-size: 0.8rem; opacity: 0.7; }
+.footer-links a { color: var(--color4); text-decoration: none; font-weight: 600; }

@@ -1,0 +1,165 @@
+
+:root {
+    --bg-dark: #020617;
+    --accent-purple: #7c3aed;
+    --accent-teal: #0d9488;
+    --white: #f8fafc;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--white);
+    overflow-x: hidden;
+    min-height: 180vh; /* Allows scrolling */
+}
+
+/* Background Animated Orbs */
+.circle {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(80px);
+    z-index: -1;
+    opacity: 0.35;
+    transition: transform 0.1s linear;
+}
+
+#circle1 {
+    width: 350px;
+    height: 350px;
+    background: var(--accent-purple);
+    top: 15%;
+    left: -5%;
+}
+
+#circle2 {
+    width: 450px;
+    height: 450px;
+    background: var(--accent-teal);
+    bottom: 10%;
+    right: -5%;
+}
+
+/* Navigation */
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem 10%;
+    position: fixed;
+    width: 100%;
+    z-index: 100;
+    backdrop-filter: blur(15px);
+}
+
+.logo {
+    font-size: 1.4rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: var(--accent-teal);
+}
+
+/* Button & Morphing Animation */
+.btn {
+    padding: 0.8rem 1.8rem;
+    border-radius: 8px; /* Initial Shape */
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: inline-block;
+}
+
+.login-btn {
+    background: transparent;
+    color: var(--white);
+    margin-right: 1rem;
+}
+
+.reg-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: var(--white);
+}
+
+.main-cta {
+    background: var(--accent-teal);
+    color: white;
+    padding: 1.2rem 3rem;
+    font-size: 1.1rem;
+}
+
+/* THE CLICK ANIMATION: Changes shape to Oval */
+.btn:active {
+    transform: scale(0.92);
+    border-radius: 50px; /* Morph to Oval */
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
+}
+
+/* Hero Section */
+.hero {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 0 10%;
+}
+
+.hero h1 {
+    font-size: 4.5rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.1;
+}
+
+.gradient-text {
+    background: linear-gradient(to right, #2dd4bf, #a78bfa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.hero p {
+    font-size: 1.2rem;
+    color: #94a3b8;
+    max-width: 600px;
+    margin-bottom: 3rem;
+}
+
+/* Appearing Animations on Load */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.reveal {
+    opacity: 0;
+    animation: fadeInUp 0.8s ease-out forwards;
+}
+
+.delay-1 { animation-delay: 0.3s; }
+.delay-2 { animation-delay: 0.6s; }
+
+.scroll-indicator {
+    position: absolute;
+    bottom: 40px;
+    opacity: 0.4;
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.info-section {
+    height: 80vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
