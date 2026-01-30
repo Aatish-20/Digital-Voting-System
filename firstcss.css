@@ -83,11 +83,119 @@ nav {
     margin-right: 1rem;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Unique Registration Button Styling */
 .reg-btn {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: var(--white);
+    position: relative;
+    padding: 14px 32px;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #cfc6d6; /* Your dark color for text */
+    background: #1f234b; /* Your peach color */
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 8px 0px #568ec0; /* Subtle 3D bottom shadow */
+    overflow: hidden;
 }
+
+/* 1. Hover Effect: Floating and Glowing */
+.reg-btn:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 25px rgba(38, 62, 75, 0.4);
+    background-color: #ffffff;
+    color: #574964;
+}
+
+/* 2. The Shine Animation (Light moving across button) */
+.reg-btn::after {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -60%;
+    width: 20%;
+    height: 200%;
+    background: rgba(255, 255, 255, 0.5);
+    transform: rotate(30deg);
+    transition: all 0.6s ease;
+}
+
+.reg-btn:hover::after {
+    left: 120%;
+}
+
+/* 3. Click Animation: Morph to OVAL */
+.reg-btn:active {
+    transform: translateY(2px); /* Pushes down like a real button */
+    box-shadow: 0 2px 0px #C8AAAA;
+    border-radius: 50px; /* Morphs to Oval shape */
+    padding-left: 45px;
+    padding-right: 45px;
+    background: #C8AAAA;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 .main-cta {
     background: var(--accent-teal);
