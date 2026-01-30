@@ -1,4 +1,4 @@
-window.addEventListener('scroll', () => {
+    window.addEventListener('scroll', () => {
     // Calculate how far the user has scrolled (0 to 1)
     const scrollPercent = window.scrollY / (document.body.offsetHeight - window.innerHeight);
     
@@ -20,3 +20,32 @@ window.addEventListener('scroll', () => {
 
 // Subtle "Appearing" console log to verify connection
 console.log("Aao Vote Karo: Scripts Connected Successfully.");
+
+// Function to guide user to the login page after a delay
+function goToLogin() {
+    alert("Registration Successful! Redirecting to Login...");
+    
+    // This line changes the page automatically
+    window.location.href = "login.html"; 
+}
+
+const regBtn = document.querySelector('.reg-btn');
+
+regBtn.addEventListener('click', function (e) {
+    // Create a span for the ripple effect
+    let ripple = document.createElement('span');
+    ripple.classList.add('ripple');
+    this.appendChild(ripple);
+
+    // Get position of click
+    let x = e.clientX - e.target.offsetLeft;
+    let y = e.clientY - e.target.offsetTop;
+
+    ripple.style.left = `${x}px`;
+    ripple.style.top = `${y}px`;
+
+    // Remove ripple after animation ends
+    setTimeout(() => {
+        ripple.remove();
+    }, 600);
+});
